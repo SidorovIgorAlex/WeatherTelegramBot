@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,8 @@ public class Bot extends TelegramLongPollingBot {
 
         sendMessage.setReplyToMessageId(message.getMessageId());
 
+        sendMessage.enableMarkdown(false);
+
         sendMessage.setText(text);
         try {
 
@@ -46,7 +49,7 @@ public class Bot extends TelegramLongPollingBot {
 
 
     public void onUpdateReceived(Update update) {
-//        Model model = new Model();
+        Model model = new Model();
         Message message = update.getMessage();
         if (message != null && message.hasText()) {
             switch (message.getText()) {
@@ -57,12 +60,11 @@ public class Bot extends TelegramLongPollingBot {
                     sendMsg(message, "Что будем настраивать?");
                     break;
                 default:
-//                    try {
-////                        sendMsg(message, Weather.getWeather(message.getText(), model));
-//                    } catch (IOException e) {
-//                        sendMsg(message, "Город не найден!");
-//                    }
-
+                    try {
+                        sendMsg(message, Weather.getWeather(message.getText(), model));
+                    } catch (IOException e) {
+                        sendMsg(message, "City not found");
+                    }
             }
         }
 
